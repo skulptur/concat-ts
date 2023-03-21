@@ -1,9 +1,111 @@
-# typescript-cli-starter
+# concat-ts
 
-A simple and zero-opinion typescript starter template for building cross-platform command line applications.
-Your application will be installable from `npm` or by sharing your native executables.
+A simple CLI tool to concatenate exported TypeScript files.
+
+## Description
+
+concat-ts is a command-line utility that processes TypeScript files, concatenating them while preserving their export order. It simplifies the process of merging exported TypeScript files into a single output file, making it easier to manage and share code.
+
+## Features
+
+Concatenates TypeScript files in topological order based on their exports
+Removes import declarations from the output file
+Easy to integrate into your build process
+Installation
+Install concat-ts as a global package:
+
+```bash
+npm install -g concat-ts
+```
+
+Or, add it as a dependency to your project:
+
+```bash
+npm install concat-ts --save-dev
+```
 
 ## Usage
+
+Command Line
+
+```bash
+concat-ts -i <input_entry_path> -o <output_path>
+```
+
+- -i, --input <path>: Input entry path (required)
+- -o, --output <path>: Output path (required)
+
+Programmatically
+
+```typescript
+import { concatTs } from "concat-ts";
+
+concatTs({
+  input: "path/to/input/entry.ts",
+  output: "path/to/output/file.ts",
+});
+```
+
+Example
+Given the following TypeScript files:
+
+index.ts
+
+```typescript
+export { default as Foo } from "./Foo";
+export { default as Bar } from "./Bar";
+```
+
+Foo.ts
+
+```typescript
+export default class Foo {
+  // ...
+}
+```
+
+Bar.ts
+
+```typescript
+export default class Bar {
+  // ...
+}
+```
+
+Running the command:
+
+```bash
+concat-ts -i index.ts -o output.ts
+```
+
+Will produce the following concatenated output file:
+
+output.ts
+
+```typescript
+export default class Foo {
+  // ...
+}
+
+export default class Bar {
+  // ...
+}
+```
+
+As you can see this is a simple concat and things such as the default exports will not be fixed. That being said, the files are topologically imported.
+
+## Scripts
+
+npm run dev: Run the CLI in development mode using ts-node
+npm run clean: Clean the dist/ and exec/ directories
+npm run build: Clean and compile the TypeScript files
+npm run bundle: Build and package the CLI into an executable
+
+## License
+
+MIT License
+
+# Development
 
 ### **dev**
 
@@ -40,3 +142,7 @@ Cleans, then builds, and tests the built code.
 Cleans, then builds, then bundles into native executables for Windows, Mac, and Linux.
 
 Your shareable executables will be in the `./exec/` directory.
+
+```
+
+```
