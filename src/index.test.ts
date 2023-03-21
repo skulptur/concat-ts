@@ -1,21 +1,19 @@
-import test from 'ava'
+import test from "ava";
 
-import { orderPizza } from './index'
+import { concatTs } from "./index";
 
-test.before(async t => {
-  console.log('Starting tests!')
-})
+test.before(async (t) => {
+  console.log("Starting tests!");
+});
 
-test('can order a pizza', async t => {
-
-  let result = await orderPizza({
+test("can order a pizza", async (t) => {
+  let result = await concatTs({
     peppers: false,
     pineapple: false,
     bbqSauce: false,
-    cheeseType: 'swiss'
-  })
+    cheeseType: "swiss",
+  });
 
-  t.true(result.message.includes('you ordered a pizza'))
-  t.true(result.message.includes('swiss'))
-
-})
+  t.true(result.message.includes("you ordered a pizza"));
+  t.true(result.message.includes("swiss"));
+});

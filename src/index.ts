@@ -1,17 +1,81 @@
-export interface Toppings {
-  peppers: boolean
-  pineapple: boolean
-  bbqSauce: boolean
-  cheeseType: string
+import * as fs from "fs";
+import * as path from "path";
+import * as ts from "typescript";
+
+function findExports(filePath: string): string[] {
+  const sourceFile = ts.createSourceFile(
+    filePath,
+    fs.readFileSync(filePath, "utf8"),
+    ts.ScriptTarget.ES2015
+  );
+
+  const exports: string[] = [];
+
+  sourceFile.forEachChild((node) => {
+    if (ts.isExportDeclaration(node)) {
+      const { moduleSpecifier } = node;
+      if (moduleSpecifier && ts.isStringLiteral(moduleSpecifier)) {
+        const importedFilePath = path.resolve(
+          path.dirname(filePath),
+          moduleSpecifier.text + ".ts"
+        );
+        exports.push(importedFilePath);
+      }
+    }
+  });
+
+  return exports;
 }
 
-export async function orderPizza (toppings: Toppings): Promise<{ message: string}> {
-  let message = 'you ordered a pizza with:\n'
-  if (toppings.peppers) message += '  - peppers\n'
-  if (toppings.pineapple) message += '  - pineapple\n'
-  if (toppings.bbqSauce) message += '  - bbq\n'
-  message += `  - ${toppings.cheeseType} cheese`
-  return {
-    message
+function processFile(filePath: string): string {
+  const sourceFile = ts.createSourceFile(
+    filePath,
+    fs.readFileSync(filePath, "utf8"),
+    ts.ScriptTarget.ES2015
+  );
+
+  let output = "";
+
+  sourceFile.forEachChild((node) => {
+    if (!ts.isImportDeclaration(node)) {
+      output += node.getFullText(sourceFile) + "\n";
+    }
+  });
+
+  return output;
+}
+
+function concatFilesInTopologicalOrder(
+  filePaths: string[],
+  visited: Set<string> = new Set(),
+  output: string[] = []
+): string[] {
+  for (const filePath of filePaths) {
+    if (!visited.has(filePath)) {
+      visited.add(filePath);
+      const exports = findExports(filePath);
+      concatFilesInTopologicalOrder(exports, visited, output);
+      output.push(processFile(filePath));
+    }
   }
+
+  return output;
+}
+
+export interface Props {
+  input: string;
+  output: string;
+}
+
+export function concatTs(props: Props) {
+  const indexFilePath = props.input;
+  const outputFile = props.output;
+
+  const exportedFiles = findExports(indexFilePath);
+  const concatenatedContent =
+    concatFilesInTopologicalOrder(exportedFiles).join("\n");
+
+  fs.writeFileSync(outputFile, concatenatedContent);
+
+  return outputFile;
 }
