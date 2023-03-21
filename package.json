@@ -1,9 +1,8 @@
 {
-  "name": "typescript-cli-starter",
+  "name": "contac-ts",
   "private": true,
   "version": "1.0.0",
-  "description": "A simple and zero-opinion typescript starter template for building cross-platform command line applications.",
-  "author": "Khalid Zoabi <kzoabi@outlook.com>",
+  "description": "Simple code to concats exported typescript files",
   "keywords": [
     "typescript",
     "cli",
