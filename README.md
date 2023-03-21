@@ -8,10 +8,10 @@ concat-ts is a command-line utility that processes TypeScript files, concatenati
 
 ## Features
 
-Concatenates TypeScript files in topological order based on their exports
-Removes import declarations from the output file
-Easy to integrate into your build process
-Installation
+Concatenates TypeScript files in topological order based on their exports. Removes import declarations from the output file. Easy to integrate into your build process
+
+## Installation
+
 Install concat-ts as a global package:
 
 ```bash
@@ -94,13 +94,6 @@ export default class Bar {
 
 As you can see this is a simple concat and things such as the default exports will not be fixed. That being said, the files are topologically imported.
 
-## Scripts
-
-npm run dev: Run the CLI in development mode using ts-node
-npm run clean: Clean the dist/ and exec/ directories
-npm run build: Clean and compile the TypeScript files
-npm run bundle: Build and package the CLI into an executable
-
 ## License
 
 MIT License
@@ -142,7 +135,3 @@ Cleans, then builds, and tests the built code.
 Cleans, then builds, then bundles into native executables for Windows, Mac, and Linux.
 
 Your shareable executables will be in the `./exec/` directory.
-
-```
-
-```
