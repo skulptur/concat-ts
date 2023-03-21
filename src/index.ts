@@ -3,9 +3,12 @@ import * as path from "path";
 import * as ts from "typescript";
 
 function findExports(filePath: string): string[] {
+  const currentDir = process.cwd();
+  const absoluteFilePath = path.resolve(currentDir, filePath);
+
   const sourceFile = ts.createSourceFile(
-    filePath,
-    fs.readFileSync(filePath, "utf8"),
+    absoluteFilePath,
+    fs.readFileSync(absoluteFilePath, "utf8"),
     ts.ScriptTarget.ES2015
   );
 
@@ -16,7 +19,7 @@ function findExports(filePath: string): string[] {
       const { moduleSpecifier } = node;
       if (moduleSpecifier && ts.isStringLiteral(moduleSpecifier)) {
         const importedFilePath = path.resolve(
-          path.dirname(filePath),
+          path.dirname(absoluteFilePath),
           moduleSpecifier.text + ".ts"
         );
         exports.push(importedFilePath);
